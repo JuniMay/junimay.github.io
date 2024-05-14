@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for Markdown content */
+.markdown {
+  @apply prose prose-lg mx-auto;
+}
+
+/* KaTeX styles */
+@import "katex/dist/katex.min.css";
+
+/* Prism styles */
+@import "prism-themes/themes/prism-one-dark.css";
