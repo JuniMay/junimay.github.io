@@ -1,9 +1,9 @@
-import Link from 'next/link'
-import { getSortedPostsData } from '../lib/posts'
-import './globals.css'
+import Link from "next/link";
+import { getSortedPostsData } from "../lib/posts";
+import "./globals.css";
 
 export default function Home() {
-  const allPostsData = getSortedPostsData()
+  const allPostsData = getSortedPostsData();
 
   return (
     <div className="container mx-auto px-4">
@@ -20,5 +20,5 @@ export default function Home() {
         ))}
       </ul>
     </div>
-  )
+  );
 }

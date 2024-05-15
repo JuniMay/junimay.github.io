@@ -8,24 +8,31 @@ import remarkRehype from "remark-rehype";
 import rehypeKatex from "rehype-katex";
 import rehypeStringify from "rehype-stringify";
 import rehypePrism from "rehype-prism-plus";
+import rehypeRaw from "rehype-raw";
 
-const postsDirectory = path.join(process.cwd(), "content/posts");
+// put posts under posts, so the image paths can be resolved by other markdown editors.
+const postsDirectory = path.join(process.cwd(), "public/posts");
 
 export function getSortedPostsData() {
   const fileNames = fs.readdirSync(postsDirectory);
-  const allPostsData = fileNames.map((fileName) => {
-    const id = fileName.replace(/\.md$/, "");
 
-    const fullPath = path.join(postsDirectory, fileName);
-    const fileContents = fs.readFileSync(fullPath, "utf8");
+  const allPostsData = fileNames
+    .filter((fileName) => {
+      return fileName.endsWith(".md");
+    })
+    .map((fileName) => {
+      const id = fileName.replace(/\.md$/, "");
 
-    const matterResult = matter(fileContents);
+      const fullPath = path.join(postsDirectory, fileName);
+      const fileContents = fs.readFileSync(fullPath, "utf8");
 
-    return {
-      id,
-      ...(matterResult.data as { date: string; title: string }),
-    };
-  });
+      const matterResult = matter(fileContents);
+
+      return {
+        id,
+        ...(matterResult.data as { date: string; title: string }),
+      };
+    });
   return allPostsData.sort((a, b) => {
     if (a.date < b.date) {
       return 1;
@@ -44,11 +51,13 @@ export async function getPostData(id: string) {
   const processedContent = await remark()
     .use(remarkGfm)
     .use(remarkMath)
-    .use(remarkRehype)
+    .use(remarkRehype, { allowDangerousHtml: true }) // 允许处理 raw HTML
+    .use(rehypeRaw) // 处理 raw HTML
     .use(rehypeKatex, { strict: false })
     .use(rehypePrism)
     .use(rehypeStringify)
     .process(matterResult.content);
+
   const contentHtml = processedContent.toString();
 
   return {

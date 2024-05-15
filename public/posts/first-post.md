@@ -3,11 +3,15 @@ title: "My First Post"
 date: "2024-05-15"
 ---
 
+![image-20240515103520504](first-post.assets/image-20240515103520504.png)
+
 This is my first blog in markdown.
 
-Inline math: $E = mc^2$
+Inline math: $E = mc^2$ [^2]
 
-Block math:
+[^2]: This is also a footnote
+
+Block math[^1]:
 $$
 \frac{1}{2} + \int_{a}^{b} f(x) \,dx = F(b) - F(a)
 $$
@@ -17,6 +21,8 @@ $$
 123 \\
 \frac{1}{2} + \int_{a}^{b} f(x) \,dx = F(b) - F(a)
 $$
+
+[^1]: This is a footnote.
 
 ```python
 def main():
