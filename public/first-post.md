@@ -3,7 +3,7 @@ title: "My First Post"
 date: "2024-05-15"
 ---
 
-![image-20240515103520504](first-post.assets/image-20240515103520504.png)
+![image-20240515103520504](first-post/image-20240515103520504.png)
 
 This is my first blog in markdown.
 

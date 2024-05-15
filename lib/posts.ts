@@ -11,7 +11,7 @@ import rehypePrism from "rehype-prism-plus";
 import rehypeRaw from "rehype-raw";
 
 // put posts under posts, so the image paths can be resolved by other markdown editors.
-const postsDirectory = path.join(process.cwd(), "public/posts");
+const postsDirectory = path.join(process.cwd(), "public/");
 
 export function getSortedPostsData() {
   const fileNames = fs.readdirSync(postsDirectory);
@@ -51,8 +51,8 @@ export async function getPostData(id: string) {
   const processedContent = await remark()
     .use(remarkGfm)
     .use(remarkMath)
-    .use(remarkRehype, { allowDangerousHtml: true }) // 允许处理 raw HTML
-    .use(rehypeRaw) // 处理 raw HTML
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw)
     .use(rehypeKatex, { strict: false })
     .use(rehypePrism)
     .use(rehypeStringify)
