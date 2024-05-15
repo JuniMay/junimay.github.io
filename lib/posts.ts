@@ -11,7 +11,7 @@ import rehypePrism from "rehype-prism-plus";
 import rehypeRaw from "rehype-raw";
 
 // put posts under posts, so the image paths can be resolved by other markdown editors.
-const postsDirectory = path.join(process.cwd(), "public/");
+const postsDirectory = path.join(process.cwd(), "public/posts");
 
 export function getSortedPostsData() {
   const fileNames = fs.readdirSync(postsDirectory);
@@ -54,11 +54,14 @@ export async function getPostData(id: string) {
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
     .use(rehypeKatex, { strict: false })
-    .use(rehypePrism)
+    .use(rehypePrism, { ignoreMissing: true })
     .use(rehypeStringify)
     .process(matterResult.content);
 
-  const contentHtml = processedContent.toString();
+  // relative path to absolute path
+  const contentHtml = processedContent
+    .toString()
+    .replace(/src="\.\/(.*?)"/g, `src="/posts/$1"`);
 
   return {
     id,

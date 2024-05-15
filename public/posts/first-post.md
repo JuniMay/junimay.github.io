@@ -1,11 +1,11 @@
 ---
-title: "My First Post"
-date: "2024-05-15"
+title: "A Sample Post"
+date: "2024-05-01"
 ---
 
-![image-20240515103520504](first-post/image-20240515103520504.png)
+![image-20240515103520504](./first-post/image-20240515103520504.png)
 
-This is my first blog in markdown.
+This is my first blog in markdown as an example and testcase.
 
 Inline math: $E = mc^2$ [^2]
 
@@ -13,13 +13,13 @@ Inline math: $E = mc^2$ [^2]
 
 Block math[^1]:
 $$
-\frac{1}{2} + \int_{a}^{b} f(x) \,dx = F(b) - F(a)
+\int_{a}^{b} f(x) \,dx = F(b) - F(a)
 $$
 
 Multiline:
 $$
 123 \\
-\frac{1}{2} + \int_{a}^{b} f(x) \,dx = F(b) - F(a)
+\int_{a}^{b} f(x) \,dx = F(b) - F(a)
 $$
 
 [^1]: This is a footnote.
@@ -46,6 +46,18 @@ fn main() {
     println!("hello world");
 }
 ```
+
+Mermaid?
+
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
+
+Not yet.
 
 ### Header 3
 

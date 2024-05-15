@@ -7,7 +7,7 @@ export default function Home() {
 
   return (
     <div className="container mx-auto px-4">
-      <h1 className="text-4xl font-bold my-4">My Blog</h1>
+      <h1 className="text-4xl font-bold my-4">Posts</h1>
       <ul>
         {allPostsData.map(({ id, date, title }) => (
           <li key={id} className="mb-4">
