@@ -1,6 +1,10 @@
 ---
 title: "Value Semantics & Ownership in Mojo"
 date: "2024-05-10"
+tags:
+    - mojo
+    - programming language
+    - ownership
 ---
 
 I am not a professional in the field of programming language design, but c++ and rust are two
