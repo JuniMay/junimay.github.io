@@ -6,7 +6,7 @@ export default function Home() {
   const allPostsData = getSortedPostsData();
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 py-8">
       <h1 className="text-4xl font-bold my-4">Posts</h1>
       <ul>
         {allPostsData.map(({ id, date, title, tags }) => (
