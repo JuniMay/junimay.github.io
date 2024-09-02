@@ -295,7 +295,7 @@ export default function About() {
           <ul className="list-disc list-inside mt-4">
             <li>
               <a className="font-semibold">Languages:</a>&nbsp;Chinese (native),
-              English (fluent, CET-6 619, TOEFL 101), Japanese (basic, CJT-4),
+              English (fluent, CET-6 619, TOEFL 103, GRE 327+3.5), Japanese (basic, CJT-4),
               German (basic)
             </li>
             <li>
