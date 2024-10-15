@@ -4,6 +4,7 @@ date: "2024-09-05"
 tags:
     - RISC-V
     - SIMD
+    - Vector Processor
 ---
 
 I've been exploring the basics of RISC-V Vector Extension (RVV) recently. My
@@ -58,7 +59,7 @@ are:
   the requirements is dependent on the minimum element size.
 - `SEW`: The element size to be operated on.
 - `VLMAX`: The maximum number of elements in a register group, given the current
-  `LMUL` and `ELEN`.
+  `LMUL` and `SEW`.
 - `AVL`: Application Vector Length, which is the number of elements that the
   software wants to operate on.
 
@@ -119,7 +120,7 @@ exit:
     ...
 ```
 
-This method is known as "strip mining". It leverages RVV's dynamic vector length
+This method is known as *stripmining*. It leverages RVV's dynamic vector length
 (instead of a more general mask) to control the looping steps.
 
 ## A Compiler Perspective
@@ -132,9 +133,10 @@ The difficulty arises from the fact that there is an implicit state when vector
 operations are performed. CSRs need to be accessed to determine how an
 instruction executes. The C intrinsics of RVV requires the programmer to pass
 `vl` as an explicit argument, and let the compiler to reduce the number of
-`vsetvl`. Of course, current compilers like clang can do an excellent job
+`vset{i}vl{i}` instructions. Of course, current compilers like clang can do an excellent job
 optimizing the manually crafted code, but it is still difficult to model the
-runtime length of vectors in a general way.
+runtime length of vectors in a general way, which makes it harder for high-level
+optimizations.
 
 There are some proposed or experimental methods in LLVM and MLIR to add support
 for RVV.
