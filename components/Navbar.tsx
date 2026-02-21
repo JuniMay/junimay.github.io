@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import {
@@ -27,55 +27,81 @@ const themeModes: Array<{ value: ThemeMode; label: string }> = [
   { value: "system", label: "Auto" },
 ];
 
+const THEME_MODE_SYNC_EVENT = "theme-mode-sync";
+
+function readThemeModeFromBrowser(): ThemeMode {
+  if (typeof window === "undefined") {
+    return "system";
+  }
+
+  // The layout script decides the theme before paint; read that value first.
+  const modeFromDom = document.documentElement.dataset.themeMode;
+  if (isThemeMode(modeFromDom)) {
+    return modeFromDom;
+  }
+
+  // Backward compatibility with old storage key.
+  try {
+    const storedMode = localStorage.getItem(THEME_MODE_STORAGE_KEY);
+    const legacyTheme = localStorage.getItem(LEGACY_THEME_STORAGE_KEY);
+    if (isThemeMode(storedMode)) {
+      return storedMode;
+    }
+    if (isTheme(legacyTheme)) {
+      return legacyTheme;
+    }
+  } catch (_error) {
+    // Ignore storage errors and use system fallback.
+  }
+
+  return "system";
+}
+
+function applyThemeMode(mode: ThemeMode): void {
+  const resolvedTheme = resolveTheme(mode, getSystemTheme());
+  document.documentElement.dataset.themeMode = mode;
+  document.documentElement.dataset.theme = resolvedTheme;
+  document.documentElement.style.colorScheme = resolvedTheme;
+
+  try {
+    localStorage.setItem(THEME_MODE_STORAGE_KEY, mode);
+    if (mode === "system") {
+      localStorage.removeItem(LEGACY_THEME_STORAGE_KEY);
+    } else {
+      localStorage.setItem(LEGACY_THEME_STORAGE_KEY, mode);
+    }
+  } catch (_error) {
+    // Ignore storage issues and keep runtime theme applied.
+  }
+}
+
+function subscribeThemeModeChange(callback: () => void): () => void {
+  window.addEventListener(THEME_MODE_SYNC_EVENT, callback);
+  window.addEventListener("storage", callback);
+
+  return () => {
+    window.removeEventListener(THEME_MODE_SYNC_EVENT, callback);
+    window.removeEventListener("storage", callback);
+  };
+}
+
+function getServerThemeModeSnapshot(): ThemeMode {
+  return "system";
+}
+
 const Navbar = () => {
   const pathname = usePathname();
-  const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
-    if (typeof window === "undefined") {
-      return "system";
-    }
-
-    // The layout script decides the theme before paint; read that value first.
-    const modeFromDom = document.documentElement.dataset.themeMode;
-    if (isThemeMode(modeFromDom)) {
-      return modeFromDom;
-    }
-
-    // Backward compatibility with old storage key.
-    try {
-      const storedMode = localStorage.getItem(THEME_MODE_STORAGE_KEY);
-      const legacyTheme = localStorage.getItem(LEGACY_THEME_STORAGE_KEY);
-      if (isThemeMode(storedMode)) {
-        return storedMode;
-      }
-      if (isTheme(legacyTheme)) {
-        return legacyTheme;
-      }
-    } catch (_error) {
-      // Ignore storage errors and use system fallback.
-    }
-    return "system";
-  });
+  const themeMode = useSyncExternalStore(
+    subscribeThemeModeChange,
+    readThemeModeFromBrowser,
+    getServerThemeModeSnapshot,
+  );
 
   useEffect(() => {
-    const applyThemeMode = (mode: ThemeMode) => {
-      const resolvedTheme = resolveTheme(mode, getSystemTheme());
-      document.documentElement.dataset.themeMode = mode;
-      document.documentElement.dataset.theme = resolvedTheme;
-      document.documentElement.style.colorScheme = resolvedTheme;
-
-      try {
-        localStorage.setItem(THEME_MODE_STORAGE_KEY, mode);
-        if (mode === "system") {
-          localStorage.removeItem(LEGACY_THEME_STORAGE_KEY);
-        } else {
-          localStorage.setItem(LEGACY_THEME_STORAGE_KEY, mode);
-        }
-      } catch (_error) {
-        // Ignore storage issues and keep runtime theme applied.
-      }
-    };
-
-    applyThemeMode(themeMode);
+    // Keep the resolved theme in sync when OS preference changes under system mode.
+    if (themeMode !== "system") {
+      return;
+    }
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const legacyMediaQuery = mediaQuery as MediaQueryList & {
@@ -83,9 +109,8 @@ const Navbar = () => {
       removeListener?: (listener: (event: MediaQueryListEvent) => void) => void;
     };
     const handleSystemChange = () => {
-      if (themeMode === "system") {
-        applyThemeMode("system");
-      }
+      applyThemeMode("system");
+      window.dispatchEvent(new Event(THEME_MODE_SYNC_EVENT));
     };
 
     // Support both modern and older Safari event APIs.
@@ -103,6 +128,11 @@ const Navbar = () => {
       }
     };
   }, [themeMode]);
+
+  const handleThemeModeSelect = (mode: ThemeMode) => {
+    applyThemeMode(mode);
+    window.dispatchEvent(new Event(THEME_MODE_SYNC_EVENT));
+  };
 
   return (
     <header className="nav-shell">
@@ -129,7 +159,7 @@ const Navbar = () => {
                 key={mode.value}
                 type="button"
                 className="theme-option"
-                onClick={() => setThemeMode(mode.value)}
+                onClick={() => handleThemeModeSelect(mode.value)}
                 data-active={themeMode === mode.value ? "true" : "false"}
                 aria-pressed={themeMode === mode.value}
               >
