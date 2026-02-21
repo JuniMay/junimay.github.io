@@ -1,8 +1,13 @@
-# A Minimal Blog
+# A Minimal Blocg
 
 A personal technical blog built with Next.js (App Router) and Tailwind CSS.
 
 I started this project with GPT-4o support, and later iterated/optimized structure and implementation with Codex.
+
+## Requirements
+
+- Node.js 22 (recommended; CI uses Node 22)
+- npm 11+
 
 ## Quick Start
 
@@ -31,22 +36,23 @@ npx serve -s out
 │   │   └── [id]/
 │   │       └── page.tsx            # post detail page
 │   ├── globals.css                 # design tokens + global styles
-│   ├── layout.tsx                  # root layout + theme boot script
+│   ├── layout.tsx                  # root layout + theme init injection
 │   └── page.tsx                    # home page (post list)
 ├── components/
 │   ├── page/
 │   │   └── StructuredContent.tsx   # reusable content-heavy page primitives
 │   └── Navbar.tsx                  # nav + theme mode switch + social icons
 ├── lib/
-│   └── posts.ts                    # markdown loading/parsing/rendering
+│   ├── posts.ts                    # markdown loading/parsing/rendering
+│   └── theme.ts                    # theme types, keys, and init script
 ├── public/
 │   └── posts/*.md                  # blog post sources
 ├── .github/
 │   ├── workflows/
-│   │   ├── ci.yml                  # lint/build/audit/dependency review gate
+│   │   ├── ci.yml                  # lint/build/audit/dependency-review gate
 │   │   └── nextjs.yml              # GitHub Pages deployment
 │   └── dependabot.yml              # automated dependency upgrades
-├── next.config.mjs                 # static export config
+├── next.config.mjs                 # static export config (`output: "export"`)
 ├── eslint.config.mjs               # ESLint flat config
 └── package.json
 ```
@@ -54,29 +60,50 @@ npx serve -s out
 ## Code Architecture
 
 1. Content source  
-   Markdown posts are stored in `public/posts/*.md` with frontmatter metadata.
+   Markdown posts live in `public/posts/*.md` with frontmatter metadata.
 
-2. Content processing (`lib/posts.ts`)  
-   Server-side build/runtime reads markdown, parses frontmatter via `gray-matter`, then runs:
-   - `remark-gfm` for GFM features
-   - `remark-math` + `rehype-katex` for math
-   - `rehype-prism-plus` for code highlighting
-   - `rehype-raw` for trusted inline HTML blocks
+2. Content processing  
+   `lib/posts.ts` reads markdown and compiles with:
+   - `remark-gfm`
+   - `remark-math` + `rehype-katex`
+   - `rehype-prism-plus`
+   - `rehype-raw` (trusted HTML from local-authored content only)
 
-3. Routing and rendering (`app/`)  
-   - `app/page.tsx`: list page using `getSortedPostsData()`
-   - `app/posts/[id]/page.tsx`: static params + post content rendering
-   - `app/about/*`: data-driven profile page (content and rendering separated)
+3. Routing and rendering  
+   - `app/page.tsx`: post list from `getSortedPostsData()`
+   - `app/posts/[id]/page.tsx`: post page (SSG via `generateStaticParams`)
+   - `app/about/*`: data-driven about page
 
 4. UI system  
-   `app/globals.css` defines tokens for spacing, typography, color, radius, motion, and light/dark theme behavior.
+   `app/globals.css` contains design tokens for spacing, typography, color, radius, and motion.
 
-5. Theme behavior  
-   `app/layout.tsx` injects a small pre-hydration script to avoid theme flash; `components/Navbar.tsx` controls mode (`Light` / `Dark` / `Auto`) and syncs with system preference.
+5. Theme system  
+   - `lib/theme.ts`: single source of truth for theme mode/types/storage keys/init script
+   - `app/layout.tsx`: injects `THEME_INIT_SCRIPT` via `next/script` (`beforeInteractive`) to avoid flash
+   - `components/Navbar.tsx`: handles `Light / Dark / Auto` switching and system-sync
+
+## Maintenance Rules (Important for Future AI/Human Contributors)
+
+1. Keep static export enabled  
+   Do not remove `output: "export"` from `next.config.mjs` unless deployment strategy changes.
+
+2. Keep theme contract stable  
+   The UI depends on `data-theme` and `data-theme-mode` on `<html>`.  
+   If theme logic changes, update both `lib/theme.ts` and `components/Navbar.tsx` consistently.
+
+3. Do not trust untrusted markdown/HTML by default  
+   `rehype-raw` is intentionally enabled for local trusted content.  
+   If external/user-generated content is introduced, add sanitization before rendering.
+
+4. Keep blog content location stable  
+   `lib/posts.ts` reads from `public/posts`. If moving content, update path resolution and image rewrite rules.
+
+5. Preserve Next 16 route typing shape  
+   In dynamic app routes, `params` typing follows current Next behavior used in this repo.
 
 ## Writing a New Post
 
-Create `public/posts/your-post-id.md` with frontmatter:
+Create `public/posts/your-post-id.md`:
 
 ```md
 ---
@@ -91,32 +118,34 @@ markdown content...
 ```
 
 Notes:
-- `date` should use sortable format `YYYY-MM-DD`.
-- Local image references like `./figure.png` are rewritten to `/posts/figure.png`.
+- Use `YYYY-MM-DD` for `date` so sorting remains stable.
+- Local image refs like `./figure.png` are rewritten to `/posts/figure.png`.
 
-## Security and Dependency Maintenance
+## CI, Security, and Dependency Updates
 
-- CI gate (`.github/workflows/ci.yml`) runs:
+- CI workflow (`.github/workflows/ci.yml`) runs:
   - `npm ci`
   - `npm run lint`
   - `npm run build`
   - `npm audit --omit=dev --audit-level=high`
-  - dependency review on pull requests
-- Dependabot (`.github/dependabot.yml`) updates:
-  - npm dependencies weekly
-  - GitHub Actions weekly
-- `package.json` uses `overrides` for known transitive-risk packages.
+  - dependency review (PR only)
+- Dependabot (`.github/dependabot.yml`) updates npm and GitHub Actions weekly.
+- `package.json` uses `overrides` for selected transitive risk mitigation.
+
+Recommended branch protection:
+- Require `CI / Lint Build Audit`
+- Require `CI / Dependency Review`
 
 ## Deployment
 
-Deployment is handled by GitHub Pages workflow:
-- Workflow file: `.github/workflows/nextjs.yml`
+GitHub Pages deployment is handled by `.github/workflows/nextjs.yml`.
+
 - Trigger: push to `master`
-- Output: static export in `out/`
+- Output artifact: static site in `out/`
 
 ## Attribution
 
-- Brand icons are provided via Font Awesome Free packages:
+- Brand icons: Font Awesome Free packages
   - `@fortawesome/free-brands-svg-icons`
   - `@fortawesome/react-fontawesome`
-- Other third-party dependencies and licenses are tracked through `package-lock.json` / npm metadata.
+- Other third-party licenses are tracked via npm metadata and `package-lock.json`.
