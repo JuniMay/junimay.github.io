@@ -55,18 +55,21 @@ export const ABOUT_HERO: AboutHeroContent = {
   routeLabel: "/about",
   title: "About Me",
   subtitle:
-    "Research-focused undergraduate interested in compilers, systems, and machine learning.",
+    "A master student interested in compilers, systems, and programming languages.",
   introParagraphs: [
-    "Hello, my name is Junyi (Juni) Mei. I am currently an undergraduate student at Nankai University, pursuing double degree of Information Security and Law.",
-    "Interested in compiler techniques, programming languages, computer architecture, and machine learning.",
-    "Also enthusiastic about linguistics and philosophy.",
+    "Hello, my name is Juni Mei. I am currently a master student at Carnegie Mellon University. I'm interested in compilers, systems, programming languages, computer architecture, and machine learning. Also enthusiastic about linguistics and philosophy.",
   ],
 };
 
 export const EDUCATION: EducationEntry[] = [
   {
+    institution: "Carnegie Mellon University",
+    program: "M.S. in Mobile and Internet of Things Engineering",
+    locationAndDate: "Pittsburgh, PA, USA | 2025.8 - 2027.5",
+  },
+  {
     institution: "Nankai University",
-    program: "Information Security and Law",
+    program: "Bachelor of Engineering in Information Security, Bachelor of Law",
     locationAndDate: "Tianjin, China | 2021.9 - 2025.8",
     courseSummary:
       "Computer Architecture (92/100), Principles of Compiler (98/100), Operating System (93/100), Computer Networks (93/100), Database System (95/100), etc.",
@@ -178,20 +181,18 @@ export const SKILLS: SkillContent = {
     },
   ],
   programming: [
-    "Proficient in Python",
     "Strong understanding of C++ and Rust",
-    "Familiar with Mojo, Java, and TypeScript",
+    "Familiar with Agda, Lean4 and Lua",
     "Basic knowledge of Haskell, Idris2, and Scala",
   ],
   additional: [
     "Knowledge about LLVM and MLIR frameworks and compiler optimization techniques.",
     "Well-acquainted with architectures, ISAs, and specifications such as ARM, RISC-V, and LoongArch.",
-    "Understand language model mechanisms (RNNs, Transformers) and vision models (CNNs, ViTs).",
   ],
 };
 
 export const ABOUT_SITE_TEXT =
-  "This is a simple personal website built with Next.js and Tailwind CSS. Building it with ChatGPT support helped me learn practical frontend development while publishing technical notes.";
+  "This is a simple personal website built with Next.js and Tailwind CSS. I built this website together with GPT-4o and iterated later with Codex.";
 
 export const CONTACT_LINKS: ContactLink[] = [
   {
