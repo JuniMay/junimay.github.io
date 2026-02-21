@@ -10,9 +10,9 @@ export default function Home() {
     <main className="main-shell">
       <section className="hero-panel">
         <p className="eyebrow">/posts</p>
-        <h1 className="page-title">Compiler notes, systems ideas, and research logs.</h1>
+        <h1 className="page-title">System notes, ideas, and research logs.</h1>
         <p className="page-subtitle">
-          A technical notebook with editorial typography and a calm, glass-like interface.
+          Just a minimal technical blog.
         </p>
       </section>
 
