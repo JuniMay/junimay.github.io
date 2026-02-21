@@ -1,37 +1,47 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { getSortedPostsData } from "../lib/posts";
-import "./globals.css";
 
 export default function Home() {
+  // Server component read: post metadata is loaded at render/build time.
   const allPostsData = getSortedPostsData();
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold my-4">Posts</h1>
-      <ul>
-        {allPostsData.map(({ id, date, title, tags }) => (
-          <li key={id} className="mb-4">
-            <Link href={`/posts/${id}`} className="text-xl text-gray-700 my-4">
+    <main className="main-shell">
+      <section className="hero-panel">
+        <p className="eyebrow">/posts</p>
+        <h1 className="page-title">Compiler notes, systems ideas, and research logs.</h1>
+        <p className="page-subtitle">
+          A technical notebook with editorial typography and a calm, glass-like interface.
+        </p>
+      </section>
+
+      <section className="card-grid" aria-label="Posts list">
+        {allPostsData.map(({ id, date, title, tags }, index) => (
+          <article
+            key={id}
+            className="post-card"
+            // `--card-index` staggers animation delays in CSS for a calmer entrance.
+            style={{ "--card-index": index } as CSSProperties}
+          >
+            <Link href={`/posts/${id}`} className="post-link">
               {title}
             </Link>
-            <div className="my-2">
-              {tags && (
-                <div className="flex space-x-2">
-                  {tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="bg-gray-700 px-2 py-1 text-sm text-white rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-            <small className="text-gray-500">{date}</small>
-          </li>
+
+            {tags && tags.length > 0 && (
+              <div className="tag-row">
+                {tags.map((tag) => (
+                  <span key={tag} className="tag-pill">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <p className="muted-date">{date}</p>
+          </article>
         ))}
-      </ul>
-    </div>
+      </section>
+    </main>
   );
 }

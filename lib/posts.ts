@@ -10,16 +10,35 @@ import rehypeStringify from "rehype-stringify";
 import rehypePrism from "rehype-prism-plus";
 import rehypeRaw from "rehype-raw";
 
-// put posts under posts, so the image paths can be resolved by other markdown editors.
+/**
+ * Store source markdown under /public/posts so local image references can resolve
+ * in both this site and external markdown editors.
+ */
 const postsDirectory = path.join(process.cwd(), "public/posts");
 
-export function getSortedPostsData() {
+interface PostFrontmatter {
+  date: string;
+  title: string;
+  tags?: string[];
+}
+
+export interface PostListItem extends PostFrontmatter {
+  id: string;
+}
+
+export interface PostData extends PostListItem {
+  contentHtml: string;
+}
+
+/**
+ * Read and sort post metadata for index/list pages.
+ * Synchronous fs calls are acceptable here because this runs at build time / server side.
+ */
+export function getSortedPostsData(): PostListItem[] {
   const fileNames = fs.readdirSync(postsDirectory);
 
   const allPostsData = fileNames
-    .filter((fileName) => {
-      return fileName.endsWith(".md");
-    })
+    .filter((fileName) => fileName.endsWith(".md"))
     .map((fileName) => {
       const id = fileName.replace(/\.md$/, "");
 
@@ -30,13 +49,11 @@ export function getSortedPostsData() {
 
       return {
         id,
-        ...(matterResult.data as {
-          date: string;
-          title: string;
-          tags?: string[];
-        }),
+        ...(matterResult.data as PostFrontmatter),
       };
     });
+
+  // Newest posts first; date is stored as sortable YYYY-MM-DD strings.
   return allPostsData.sort((a, b) => {
     if (a.date < b.date) {
       return 1;
@@ -46,7 +63,16 @@ export function getSortedPostsData() {
   });
 }
 
-export async function getPostData(id: string) {
+/**
+ * Compile a single markdown post to HTML.
+ *
+ * Pipeline:
+ * - `remarkGfm`: tables/task lists/strikethrough
+ * - `remarkMath` + `rehypeKatex`: LaTeX math rendering
+ * - `rehypePrism`: code highlighting
+ * - `rehypeRaw`: allow trusted inline HTML blocks from authored markdown
+ */
+export async function getPostData(id: string): Promise<PostData> {
   const fullPath = path.join(postsDirectory, `${id}.md`);
   const fileContents = fs.readFileSync(fullPath, "utf8");
 
@@ -62,7 +88,7 @@ export async function getPostData(id: string) {
     .use(rehypeStringify)
     .process(matterResult.content);
 
-  // relative path to absolute path
+  // Rewrite `./image.png` to `/posts/image.png` so images load from public assets.
   const contentHtml = processedContent
     .toString()
     .replace(/src="\.\/(.*?)"/g, `src="/posts/$1"`);
@@ -70,6 +96,6 @@ export async function getPostData(id: string) {
   return {
     id,
     contentHtml,
-    ...(matterResult.data as { date: string; title: string; tags?: string[] }),
+    ...(matterResult.data as PostFrontmatter),
   };
 }
