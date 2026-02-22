@@ -1,5 +1,7 @@
-import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
+import { defineConfig } from "eslint/config";
 
-const config = [...nextCoreWebVitals];
-
-export default config;
+export default defineConfig([
+  {
+    ignores: [".next/**", "node_modules/**", "out/**", "dist/**"],
+  },
+]);
