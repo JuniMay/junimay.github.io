@@ -6,8 +6,8 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkRehype from "remark-rehype";
 import rehypeKatex from "rehype-katex";
+import rehypeStarryNight from "rehype-starry-night";
 import rehypeStringify from "rehype-stringify";
-import rehypePrism from "rehype-prism-plus";
 import rehypeRaw from "rehype-raw";
 
 /**
@@ -69,7 +69,7 @@ export function getSortedPostsData(): PostListItem[] {
  * Pipeline:
  * - `remarkGfm`: tables/task lists/strikethrough
  * - `remarkMath` + `rehypeKatex`: LaTeX math rendering
- * - `rehypePrism`: code highlighting
+ * - `rehypeStarryNight`: code highlighting (unknown/missing scopes gracefully stay plain text)
  * - `rehypeRaw`: allow trusted inline HTML blocks from authored markdown
  */
 export async function getPostData(id: string): Promise<PostData> {
@@ -84,7 +84,7 @@ export async function getPostData(id: string): Promise<PostData> {
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
     .use(rehypeKatex, { strict: false })
-    .use(rehypePrism, { ignoreMissing: true })
+    .use(rehypeStarryNight, { allowMissingScopes: true })
     .use(rehypeStringify)
     .process(matterResult.content);
 

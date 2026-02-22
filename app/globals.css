@@ -1,5 +1,6 @@
 @import "katex/dist/katex.min.css";
-@import "prism-themes/themes/prism-one-dark.css";
+/* Starry Night core token selectors (`.pl-*`); colors are driven by CSS vars below. */
+@import "@wooorm/starry-night/style/core";
 
 @tailwind base;
 @tailwind components;
@@ -200,9 +201,41 @@
   --hr-border: rgba(107, 90, 67, 0.2);
 
   --inline-code-text: #3f3122;
-  --pre-bg: #171310;
-  --pre-border: rgba(174, 150, 118, 0.26);
-  --pre-glow: rgba(174, 150, 118, 0.12);
+  --pre-text: #2f2921;
+  --pre-bg: #f5efe5;
+  --pre-border: rgba(122, 97, 66, 0.3);
+  --pre-glow: rgba(122, 97, 66, 0.09);
+  /* Starry Night (GitHub PrettyLights) syntax variables for light theme. */
+  --color-prettylights-syntax-brackethighlighter-angle: #7b6d5d;
+  --color-prettylights-syntax-brackethighlighter-unmatched: #b4474d;
+  --color-prettylights-syntax-carriage-return-bg: #b4474d;
+  --color-prettylights-syntax-carriage-return-text: #fdf3e6;
+  --color-prettylights-syntax-comment: #8f806f;
+  --color-prettylights-syntax-constant: #0f4b8f;
+  --color-prettylights-syntax-constant-other-reference-link: #214f82;
+  --color-prettylights-syntax-entity: #7e3ea8;
+  --color-prettylights-syntax-entity-tag: #0f6f8f;
+  --color-prettylights-syntax-invalid-illegal-bg: #8f2f34;
+  --color-prettylights-syntax-invalid-illegal-text: #fdf3e6;
+  --color-prettylights-syntax-keyword: #b4474d;
+  --color-prettylights-syntax-markup-bold: #2f2921;
+  --color-prettylights-syntax-markup-changed-bg: #f0d9bf;
+  --color-prettylights-syntax-markup-changed-text: #7a4c2a;
+  --color-prettylights-syntax-markup-deleted-bg: #f8dcd4;
+  --color-prettylights-syntax-markup-deleted-text: #8c2f34;
+  --color-prettylights-syntax-markup-heading: #0f4b8f;
+  --color-prettylights-syntax-markup-ignored-bg: #0f4b8f;
+  --color-prettylights-syntax-markup-ignored-text: #f5efe5;
+  --color-prettylights-syntax-markup-inserted-bg: #dce8cf;
+  --color-prettylights-syntax-markup-inserted-text: #3f6428;
+  --color-prettylights-syntax-markup-italic: #2f2921;
+  --color-prettylights-syntax-markup-list: #6f4a22;
+  --color-prettylights-syntax-meta-diff-range: #8e52bd;
+  --color-prettylights-syntax-storage-modifier-import: #2f2921;
+  --color-prettylights-syntax-string: #3b6b2f;
+  --color-prettylights-syntax-string-regexp: #2e6b4d;
+  --color-prettylights-syntax-sublimelinter-gutter-mark: #9f8f7e;
+  --color-prettylights-syntax-variable: #8f5d33;
   --markdown-image-radius: var(--radius-md);
   --codeblock-radius: var(--radius-lg);
 
@@ -270,9 +303,41 @@
   --hr-border: rgba(216, 191, 154, 0.24);
 
   --inline-code-text: #ffe5bf;
-  --pre-bg: #0f0c09;
-  --pre-border: rgba(216, 191, 154, 0.24);
-  --pre-glow: rgba(216, 191, 154, 0.1);
+  --pre-text: #ead8c2;
+  --pre-bg: #221912;
+  --pre-border: rgba(221, 192, 153, 0.3);
+  --pre-glow: rgba(221, 192, 153, 0.12);
+  /* Starry Night syntax variable overrides for dark theme (warm brown palette). */
+  --color-prettylights-syntax-brackethighlighter-angle: #b9a58f;
+  --color-prettylights-syntax-brackethighlighter-unmatched: #d88d75;
+  --color-prettylights-syntax-carriage-return-bg: #8f4333;
+  --color-prettylights-syntax-carriage-return-text: #f4e7d4;
+  --color-prettylights-syntax-comment: #9d866f;
+  --color-prettylights-syntax-constant: #e0bc93;
+  --color-prettylights-syntax-constant-other-reference-link: #f0d2ae;
+  --color-prettylights-syntax-entity: #d8b6e6;
+  --color-prettylights-syntax-entity-tag: #c9d8a3;
+  --color-prettylights-syntax-invalid-illegal-bg: #7c2f29;
+  --color-prettylights-syntax-invalid-illegal-text: #f4e7d4;
+  --color-prettylights-syntax-keyword: #dd9a84;
+  --color-prettylights-syntax-markup-bold: #f4e7d4;
+  --color-prettylights-syntax-markup-changed-bg: #5a3722;
+  --color-prettylights-syntax-markup-changed-text: #f2d2ac;
+  --color-prettylights-syntax-markup-deleted-bg: #5f2a26;
+  --color-prettylights-syntax-markup-deleted-text: #f7cdc0;
+  --color-prettylights-syntax-markup-heading: #d8b48a;
+  --color-prettylights-syntax-markup-ignored-bg: #8b6241;
+  --color-prettylights-syntax-markup-ignored-text: #f4e7d4;
+  --color-prettylights-syntax-markup-inserted-bg: #394529;
+  --color-prettylights-syntax-markup-inserted-text: #d0e0b0;
+  --color-prettylights-syntax-markup-italic: #f4e7d4;
+  --color-prettylights-syntax-markup-list: #e0bb85;
+  --color-prettylights-syntax-meta-diff-range: #d8b6e6;
+  --color-prettylights-syntax-storage-modifier-import: #f2dcc1;
+  --color-prettylights-syntax-string: #c6d8a8;
+  --color-prettylights-syntax-string-regexp: #b8d9bb;
+  --color-prettylights-syntax-sublimelinter-gutter-mark: #5a4a3b;
+  --color-prettylights-syntax-variable: #e3ba8e;
 
   --about-pill-border: rgba(221, 192, 153, 0.36);
   --about-pill-bg: rgba(221, 192, 153, 0.18);
@@ -776,11 +841,31 @@ a:focus-visible {
   content: none;
 }
 
-.markdown :where(pre) {
+/* Use one shared code block container style for highlighted and plain-text fences. */
+.markdown pre {
   border-radius: var(--codeblock-radius);
   border: 1px solid var(--pre-border);
   background: var(--pre-bg);
   box-shadow: inset 0 0 0 1px var(--pre-glow);
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+}
+
+/* Keep language-tagged blocks visually identical to plain `pre` blocks. */
+.markdown pre[class*="language-"] {
+  border-radius: var(--codeblock-radius);
+  border: 1px solid var(--pre-border);
+  background: var(--pre-bg);
+  box-shadow: inset 0 0 0 1px var(--pre-glow);
+}
+
+/* Enforce transparent inner code layer so container background is the single source of truth. */
+.markdown pre > code,
+.markdown pre[class*="language-"] > code[class*="language-"] {
+  display: block;
+  color: var(--pre-text);
+  background: transparent;
+  text-shadow: none;
 }
 
 /* Reusable structured page blocks for About and future profile pages. */

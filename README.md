@@ -66,7 +66,7 @@ npx serve -s out
    `lib/posts.ts` reads markdown and compiles with:
    - `remark-gfm`
    - `remark-math` + `rehype-katex`
-   - `rehype-prism-plus`
+   - `rehype-starry-night` (GitHub-like syntax highlighter)
    - `rehype-raw` (trusted HTML from local-authored content only)
 
 3. Routing and rendering  
@@ -76,11 +76,18 @@ npx serve -s out
 
 4. UI system  
    `app/globals.css` contains design tokens for spacing, typography, color, radius, and motion.
+   It also standardizes code block presentation for both highlighted and non-highlighted fences:
+   - same `pre` container shape (radius/border/padding/shadow) for both paths
+   - theme-aware code palette via CSS variables (`light` uses a light code surface; `dark` uses a warm brown dark surface)
 
 5. Theme system  
    - `lib/theme.ts`: single source of truth for theme mode/types/storage keys/init script
    - `app/layout.tsx`: injects `THEME_INIT_SCRIPT` via `next/script` (`beforeInteractive`) to avoid flash
    - `components/Navbar.tsx`: handles `Light / Dark / Auto` switching and system-sync
+
+6. Code block behavior  
+   - Unknown code fence languages stay plain text (no token coloring), avoiding inconsistent foreground/background artifacts.
+   - Known languages are highlighted by Starry Night (`pl-*` classes), and colors are driven by theme variables for light/dark consistency.
 
 ## Maintenance Rules (Important for Future AI/Human Contributors)
 
