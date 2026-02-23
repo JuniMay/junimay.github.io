@@ -14,7 +14,7 @@
     "@fortawesome/react-fontawesome": "^3.2.0",
     "@wooorm/starry-night": "^3.9.0",
     "gray-matter": "^4.0.3",
-    "katex": "^0.16.28",
+    "katex": "^0.16.32",
     "next": "^16.1.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
